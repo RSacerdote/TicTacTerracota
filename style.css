@@ -1,0 +1,170 @@
+*, *::after, *::before{
+  box-sizing: border-box;
+}
+
+:root {
+  --cell-size: 128px;
+  --mark-size: 112px;
+  --background-color: rgb(255, 232, 214);
+  --x-color-flattened: rgb(181,172,153);
+  --o-color-flattened: rgb(229,193,170);
+  --dark-base-color: rgb(108, 88, 76);
+  --x-color: rgb(107, 112, 92);
+  --o-color: rgb(203, 153, 126);
+}
+
+body {  
+    margin: 0;
+    overflow: hidden;
+  }
+
+.board {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  justify-items: center;
+  align-items: center;
+  grid-template-columns: repeat(3, auto);
+  background-color: var(--background-color);
+}
+
+/* --- Cell Code --- */
+
+.cell{
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border: 1px solid var(--dark-base-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.cell:first-child,
+.cell:nth-child(2),
+.cell:nth-child(3) {
+  border-top: none;
+}
+.cell:nth-child(3n + 1){
+  border-left: none;
+}
+.cell:nth-child(3n + 3){
+  border-right: none;
+}
+.cell:nth-child(7),
+.cell:nth-child(8),
+.cell:last-child{
+  border-bottom: none;
+}
+
+.cell.x,
+.cell.o {
+  cursor: default;
+}
+
+/* --- End of Cell Code --- */
+/* --- X Code --- */
+
+.cell.x::before,
+.cell.x::after{
+  background-color: var(--x-color);
+}
+
+.board.x .cell:not(.x):not(.o):hover::before,
+.board.x .cell:not(.x):not(.o):hover::after {
+  background-color: var(--x-color-flattened);
+}
+
+.cell.x::before,
+.cell.x::after,
+.board.x .cell:not(.x):not(.o):hover::before,
+.board.x .cell:not(.x):not(.o):hover::after {
+  content: '';
+  position: absolute;
+  width: calc(var(--mark-size)*.15);
+  height: var(--mark-size);
+}
+
+.cell.x::before,
+.board.x .cell:not(.x):not(.o):hover::before {
+  transform: rotate(45deg);
+}
+
+.cell.x::after,
+.board.x .cell:not(.x):not(.o):hover::after {
+  transform: rotate(-45deg);
+}
+
+/* --- End of X Code --- */
+/* --- O Code --- */
+
+.cell.o::before,
+.cell.o::after,
+.board.o .cell:not(.x):not(.o):hover::before,
+.board.o .cell:not(.x):not(.o):hover::after{
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+}
+
+.cell.o::before {
+  background-color: var(--o-color);
+}
+
+.board.o .cell:not(.x):not(.o):hover::before {
+  background-color: var(--o-color-flattened);
+}
+
+.cell.o::after,
+.board.o .cell:not(.x):not(.o):hover::after{
+  width: calc(var(--mark-size)*.715);
+  height: calc(var(--mark-size)*.715);
+  background-color: var(--background-color);
+}
+
+.cell.o::before,
+.board.o .cell:not(.x):not(.o):hover::before {
+  width: var(--mark-size);
+  height: var(--mark-size);
+}
+
+/* --- End of O Code --- */
+/* --- Game over Overlay Code --- */
+
+.winning-message {
+  display:none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,.9);
+  justify-content: center;
+  align-items: center;
+  color: var(--background-color);
+  font-family: 'Open Sans', sans-serif;
+  font-size: 5rem;
+  flex-direction: column;
+}
+
+.winning-message button {
+  font-size: 3rem;
+  background-color: var(--background-color);
+  border: 3px solid var(--dark-base-color);
+  padding: .25em .5em;
+  cursor: pointer;
+  border-radius: 8px;
+  color: var(--dark-base-color)
+}
+
+.winning-message button:hover {
+  background-color: var(--dark-base-color);
+  color: var(--background-color)
+}
+
+.winning-message.show{
+  display: flex;
+}
