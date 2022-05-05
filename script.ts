@@ -10,32 +10,36 @@ const WINNING_COMBINATIONS = [
     [0, 4, 8],
     [6, 4, 2]
 ];
-const cellElements = document.querySelectorAll('[data-cell]');
+const cellElements: NodeListOf<HTMLElement> = document.querySelectorAll('[data-cell]');
 const board = document.getElementById('board');
 const menu = document.getElementById('Menu');
-const menuMessageElement = document.querySelector('[data-endgame-messsage-text]');
+const menuMessageElement: HTMLElement | null = document.querySelector('[data-endgame-messsage-text]');
 const restartButton = document.getElementById('restartButton');
-let currentClass;
+let currentClass: string;
 
 startGame();
+restartButton?.addEventListener('click', startGame);
 
-restartButton.addEventListener('click', startGame);
-
-function startGame(){
+function startGame(): void {
     currentClass = X_CLASS;
+    console.log("a")
     cellElements.forEach(cell => {
+        console.log("9")
         cell.classList.remove(X_CLASS);
         cell.classList.remove(O_CLASS);
         cell.removeEventListener('click', handleCLick);
         cell.addEventListener('click', handleCLick, {once: true});
     })
     setBoardHoverClass();
-    menu.classList.remove('show');
+    menu?.classList.remove('show');
 }
 
-function handleCLick(e) {
+function handleCLick(e: Event): void {
+    console.log("clicked")
     const cell = e.target;
-    placeMark(cell,currentClass);
+    if ((cell !== null) && (cell instanceof HTMLElement)) {
+        placeMark(cell);
+    }
     if (checkWin()){
         endGame(false);
     } 
@@ -48,33 +52,35 @@ function handleCLick(e) {
     }
 }
 
-function placeMark(cell){
+function placeMark(cell: HTMLElement): void{
     cell.classList.add(currentClass);
 }
 
-function endGame(draw){
-    if (draw){
-        menuMessageElement.innerText = 'Draw!';
-    } 
-    else {
-        menuMessageElement.innerText = `${currentClass.toUpperCase()} won!`;
+function endGame(draw: boolean): void{
+    if (menuMessageElement !== null) {
+        if (draw) {
+            menuMessageElement.innerText = 'Draw!';
+        }
+        else {
+            menuMessageElement.innerText = `${currentClass.toUpperCase()} won!`;
+        }
     }
-    menu.classList.add('show');
+    menu?.classList.add('show');
 }
 
-function setBoardHoverClass() {
-    board.classList.remove(X_CLASS);
-    board.classList.remove(O_CLASS);
-    board.classList.add(currentClass)
+function setBoardHoverClass(): void {
+    board?.classList.remove(X_CLASS);
+    board?.classList.remove(O_CLASS);
+    board?.classList.add(currentClass)
 }
 
-function isDraw() {
+function isDraw(): boolean {
     return [...cellElements].every(cell => {
         return cell.classList.contains(X_CLASS) || cell.classList.contains(O_CLASS);
     })
 }
 
-function checkWin() {
+function checkWin(): boolean {
     return WINNING_COMBINATIONS.some(combination => {
         return combination.every(index => {
             return cellElements[index].classList.contains(currentClass)
